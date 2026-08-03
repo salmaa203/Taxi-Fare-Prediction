@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 40px 15px;
+    color: #1e293b;
+}
+
+/* Main Container Card */
+.container {
+    max-width: 950px;
+    width: 90%;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: fade 0.7s ease-in-out;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header & Titles */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 38px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 20px;
+    font-size: 17px;
+}
+
+/* Card Sections */
+.section {
+    background: #f8fafc;
+    padding: 24px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    border: 1px solid #e2e8f0;
+}
+
+h2 {
+    color: #1e3a8a;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Grid System */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+/* Inputs & Selects */
+input, select {
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 15px;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+    color: #0f172a;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+}
+
+/* Map Style */
+.map-instruction {
+    font-size: 14px;
+    color: #475569;
+    background: #e0e7ff;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 4px solid #2563eb;
+}
+
+#map {
+    height: 550px;
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid #cbd5e1;
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+button {
+    flex: 2;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+button:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+.reset-btn {
+    flex: 1;
+    background: #f1f5f9;
+    color: #475569;
+    box-shadow: none;
+    border: 1px solid #cbd5e1;
+}
+
+.reset-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* Result Card */
+.result {
+    margin-top: 30px;
+    background: #dcfce7;
+    border-left: 6px solid #16a34a;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    color: #14532d;
+    box-shadow: 0 4px 15px rgba(22, 163, 74, 0.15);
+    animation: fade 0.5s ease-in-out;
+}
+
+.result h3 {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+/* Footer */
+footer {
+    margin-top: 40px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.6;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 20px;
+}

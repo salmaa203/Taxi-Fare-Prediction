@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi Fare Prediction System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet Geocoder CSS (For Address Search) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Geocoder JS (For Address Search) -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Taxi Fare Prediction</h1>
+        </header>
+
+        <form action="/predict" method="POST">
+
+            <!-- Section 1: Trip Information -->
+            <div class="section">
+                <h2> Trip Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Passenger Count</label>
+                        <input type="number" name="passenger_count" min="1" max="8" value="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hour (0 - 23)</label>
+                        <input type="number" name="hour" min="0" max="23" value="12" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Day of Month</label>
+                        <input type="number" name="day" min="1" max="31" value="15" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Month</label>
+                        <input type="number" name="month" min="1" max="12" value="6" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Weekday</label>
+                        <select name="weekday">
+                            <option value="0">Monday</option>
+                            <option value="1">Tuesday</option>
+                            <option value="2">Wednesday</option>
+                            <option value="3">Thursday</option>
+                            <option value="4">Friday</option>
+                            <option value="5">Saturday</option>
+                            <option value="6">Sunday</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="number" name="year" min="2000" max="2035" value="2009" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Route & Map -->
+            <div class="section">
+                <h2> Select Route</h2>
+                <p class="map-instruction">
+                    🔍 Use the search boxes on the map or click directly to set Pickup 📍 and Dropoff 🎯 locations.
+                </p>
+
+                <div id="map"></div>
+
+                <input type="hidden" id="pickup_latitude" name="pickup_latitude" required>
+                <input type="hidden" id="pickup_longitude" name="pickup_longitude" required>
+                <input type="hidden" id="dropoff_latitude" name="dropoff_latitude" required>
+                <input type="hidden" id="dropoff_longitude" name="dropoff_longitude" required>
+            </div>
+
+            <!-- Section 3: Trip Conditions -->
+            <div class="section">
+                <h2> Trip Conditions</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Car Condition</label>
+                        <select name="car_condition">
+                            <option value="0">Bad</option>
+                            <option value="1">Excellent</option>
+                            <option value="2">Good</option>
+                            <option value="3" selected>Very Good</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Weather</label>
+                        <select name="weather">
+                            <option value="0">Cloudy</option>
+                            <option value="1">Rainy</option>
+                            <option value="2">Stormy</option>
+                            <option value="3" selected>Sunny</option>
+                            <option value="4">Windy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Traffic Condition</label>
+                        <select name="traffic">
+                            <option value="0">Congested Traffic</option>
+                            <option value="1">Dense Traffic</option>
+                            <option value="2" selected>Flow Traffic</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <button type="submit">Predict Fare</button>
+                <button type="reset" class="reset-btn" onclick="clearMap()">Clear Form</button>
+            </div>
+
+        </form>
+
+        <!-- Prediction Result -->
+        {% if prediction_text %}
+        <div class="result">
+            <h3>{{ prediction_text }}</h3>
+        </div>
+        {% endif %}
+
+        <!-- Footer -->
+        <footer>
+            <p>Developed using <b>Flask</b> • <b>Scikit-Learn</b> • <b>Python</b></p>
+            <p>Alexandria University</p>
+        </footer>
+
+    </div>
+
+    <!-- Map & Route Script -->
+    <script>
+        var map = L.map('map').setView([40.7128, -74.0060], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap',
+            maxZoom: 19
+        }).addTo(map);
+
+        var pickupMarker = null;
+        var dropoffMarker = null;
+        var routeLine = null;
+        var selectingPickup = true;
+
+        // Search Control for Map
+        var geocoder = L.Control.geocoder({
+            defaultMarkGeocode: false,
+            placeholder: "Search location..."
+        }).on('markgeocode', function(e) {
+            var latlng = e.geocode.center;
+            setLocation(latlng);
+            map.setView(latlng, 14);
+        }).addTo(map);
+
+        function setLocation(latlng) {
+            if (selectingPickup) {
+                if (pickupMarker) map.removeLayer(pickupMarker);
+                pickupMarker = L.marker(latlng, {title: "Pickup"}).addTo(map).bindPopup("📍 Pickup Point").openPopup();
+                document.getElementById("pickup_latitude").value = latlng.lat;
+                document.getElementById("pickup_longitude").value = latlng.lng;
+                selectingPickup = false;
+            } else {
+                if (dropoffMarker) map.removeLayer(dropoffMarker);
+                dropoffMarker = L.marker(latlng, {title: "Dropoff"}).addTo(map).bindPopup("🎯 Dropoff Point").openPopup();
+                document.getElementById("dropoff_latitude").value = latlng.lat;
+                document.getElementById("dropoff_longitude").value = latlng.lng;
+                selectingPickup = true;
+            }
+            updateRouteLine();
+        }
+
+        map.on('click', function (e) {
+            setLocation(e.latlng);
+        });
+
+        function updateRouteLine() {
+            if (pickupMarker && dropoffMarker) {
+                if (routeLine) map.removeLayer(routeLine);
+                
+                var latlngs = [
+                    pickupMarker.getLatLng(),
+                    dropoffMarker.getLatLng()
+                ];
+
+                // Draw Blue Polyline (Uber Style)
+                routeLine = L.polyline(latlngs, {
+                    color: '#2563eb',
+                    weight: 5,
+                    opacity: 0.8,
+                    dashArray: '10, 10'
+                }).addTo(map);
+
+                map.fitBounds(L.latLngBounds(latlngs), {padding: [50, 50]});
+            }
+        }
+
+        function clearMap() {
+            if (pickupMarker) map.removeLayer(pickupMarker);
+            if (dropoffMarker) map.removeLayer(dropoffMarker);
+            if (routeLine) map.removeLayer(routeLine);
+            pickupMarker = null;
+            dropoffMarker = null;
+            routeLine = null;
+            selectingPickup = true;
+        }
+    </script>
+</body>
+
+</html>
