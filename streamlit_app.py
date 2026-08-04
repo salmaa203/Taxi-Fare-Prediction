@@ -25,24 +25,35 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-    /* Main background */
+    /* =========================
+       Main Background
+       ========================= */
+
     .stApp {
         background: linear-gradient(
             135deg,
-            #0f172a 0%,
-            #172554 50%,
-            #0f172a 100%
+            #0b1220 0%,
+            #111c38 50%,
+            #0b1220 100%
         );
     }
 
-    /* Main content */
+
+    /* =========================
+       Main Container
+       ========================= */
+
     .block-container {
         max-width: 1000px;
         padding-top: 3rem;
         padding-bottom: 3rem;
     }
 
-    /* Main title */
+
+    /* =========================
+       Title
+       ========================= */
+
     .main-title {
         text-align: center;
         color: #f8fafc;
@@ -58,46 +69,102 @@ st.markdown("""
         margin-bottom: 35px;
     }
 
-    /* Section titles */
+
+    /* =========================
+       Section Titles
+       ========================= */
+
     .section-title {
-        color: #e2e8f0;
+        color: #f1f5f9;
         font-size: 25px;
         font-weight: 600;
         margin-top: 25px;
         margin-bottom: 18px;
+
         border-left: 4px solid #3b82f6;
         padding-left: 12px;
     }
 
-    /* Labels */
+
+    /* =========================
+       Labels
+       ========================= */
+
     label {
-        color: #e2e8f0 !important;
+        color: #f1f5f9 !important;
         font-weight: 500 !important;
     }
 
-    /* Inputs */
+
+    /* =========================
+       Number Inputs
+       ========================= */
+
     div[data-baseweb="input"] {
-        background-color: #1e293b;
+        background-color: #f8fafc !important;
         border-radius: 10px;
     }
+
+    div[data-baseweb="input"] input {
+        color: #111827 !important;
+        background-color: #f8fafc !important;
+    }
+
+
+    /* =========================
+       Select Boxes
+       ========================= */
 
     div[data-baseweb="select"] {
-        background-color: #1e293b;
+        background-color: #f8fafc !important;
         border-radius: 10px;
     }
 
-    input {
-        color: #f8fafc !important;
+    div[data-baseweb="select"] > div {
+        background-color: #f8fafc !important;
     }
 
-    /* Select text */
-    div[data-baseweb="select"] * {
-        color: #f8fafc !important;
+    div[data-baseweb="select"] span {
+        color: #111827 !important;
     }
 
-    /* Map card */
+    div[data-baseweb="select"] input {
+        color: #111827 !important;
+    }
+
+
+    /* Dropdown menu */
+
+    ul[role="listbox"] {
+        background-color: #ffffff !important;
+    }
+
+    li[role="option"] {
+        color: #111827 !important;
+        background-color: #ffffff !important;
+    }
+
+    li[role="option"]:hover {
+        background-color: #e2e8f0 !important;
+        color: #111827 !important;
+    }
+
+
+    /* =========================
+       Help Icon
+       ========================= */
+
+    [data-testid="stTooltipIcon"] {
+        color: #cbd5e1 !important;
+    }
+
+
+    /* =========================
+       Map Card
+       ========================= */
+
     .map-card {
-        background: #172033;
+        background: #111c38;
         padding: 20px;
         border-radius: 16px;
         border: 1px solid #334155;
@@ -111,27 +178,37 @@ st.markdown("""
         margin-bottom: 15px;
     }
 
-    /* Location status */
+
+    /* =========================
+       Location Boxes
+       ========================= */
+
     .location-box {
-        background: #172033;
+        background: #172554;
         border: 1px solid #334155;
         border-radius: 12px;
         padding: 12px 16px;
-        color: #cbd5e1;
+        color: #e2e8f0;
         margin-top: 8px;
     }
 
-    /* Prediction result */
+
+    /* =========================
+       Prediction Result
+       ========================= */
+
     .result-box {
         background: linear-gradient(
             135deg,
             #1d4ed8,
             #2563eb
         );
+
         padding: 25px;
         border-radius: 16px;
         text-align: center;
         margin-top: 25px;
+
         box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
     }
 
@@ -147,11 +224,15 @@ st.markdown("""
         font-weight: 700;
     }
 
-    /* Buttons */
+
+    /* =========================
+       Buttons
+       ========================= */
+
     .stButton > button {
         width: 100%;
         background: #2563eb;
-        color: white;
+        color: white !important;
         border: none;
         border-radius: 10px;
         padding: 12px;
@@ -162,14 +243,27 @@ st.markdown("""
 
     .stButton > button:hover {
         background: #1d4ed8;
+        color: white !important;
         border: none;
-        color: white;
     }
 
-    /* Footer */
+
+    /* =========================
+       Warning / Info Messages
+       ========================= */
+
+    div[data-testid="stAlert"] {
+        border-radius: 10px;
+    }
+
+
+    /* =========================
+       Footer
+       ========================= */
+
     .footer {
         text-align: center;
-        color: #64748b;
+        color: #94a3b8;
         font-size: 13px;
         margin-top: 40px;
         padding-top: 20px;
@@ -284,8 +378,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
 col1, col2 = st.columns(2)
 
+
+# =========================================================
+# Left Column
+# =========================================================
 
 with col1:
 
@@ -322,6 +421,10 @@ with col1:
     )
 
 
+# =========================================================
+# Right Column
+# =========================================================
+
 with col2:
 
     weekday_name = st.selectbox(
@@ -355,6 +458,7 @@ with col2:
         value=2026,
         step=1
     )
+
 
     car_condition_name = st.selectbox(
         "Car Condition",
@@ -439,6 +543,9 @@ if "pickup" not in st.session_state:
 if "dropoff" not in st.session_state:
     st.session_state.dropoff = None
 
+if "last_map_click" not in st.session_state:
+    st.session_state.last_map_click = None
+
 
 # =========================================================
 # Create Map
@@ -451,7 +558,9 @@ m = folium.Map(
 )
 
 
+# =========================================================
 # Pickup Marker
+# =========================================================
 
 if st.session_state.pickup is not None:
 
@@ -466,7 +575,9 @@ if st.session_state.pickup is not None:
     ).add_to(m)
 
 
+# =========================================================
 # Dropoff Marker
+# =========================================================
 
 if st.session_state.dropoff is not None:
 
@@ -481,7 +592,9 @@ if st.session_state.dropoff is not None:
     ).add_to(m)
 
 
+# =========================================================
 # Display Map
+# =========================================================
 
 map_data = st_folium(
     m,
@@ -491,7 +604,10 @@ map_data = st_folium(
 )
 
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
 
 
 # =========================================================
@@ -503,24 +619,32 @@ if map_data["last_clicked"] is not None:
     clicked_lat = map_data["last_clicked"]["lat"]
     clicked_lon = map_data["last_clicked"]["lng"]
 
-    if st.session_state.pickup is None:
+    current_click = (
+        round(clicked_lat, 6),
+        round(clicked_lon, 6)
+    )
 
-        st.session_state.pickup = (
-            clicked_lat,
-            clicked_lon
-        )
+    if current_click != st.session_state.last_map_click:
 
-        st.rerun()
+        st.session_state.last_map_click = current_click
 
+        if st.session_state.pickup is None:
 
-    elif st.session_state.dropoff is None:
+            st.session_state.pickup = (
+                clicked_lat,
+                clicked_lon
+            )
 
-        st.session_state.dropoff = (
-            clicked_lat,
-            clicked_lon
-        )
+            st.rerun()
 
-        st.rerun()
+        elif st.session_state.dropoff is None:
+
+            st.session_state.dropoff = (
+                clicked_lat,
+                clicked_lon
+            )
+
+            st.rerun()
 
 
 # =========================================================
@@ -532,9 +656,9 @@ if st.session_state.pickup is not None:
     st.markdown(
         f"""
         <div class="location-box">
-        <b>Pickup:</b>
-        {st.session_state.pickup[0]:.5f},
-        {st.session_state.pickup[1]:.5f}
+            <b>Pickup:</b>
+            {st.session_state.pickup[0]:.5f},
+            {st.session_state.pickup[1]:.5f}
         </div>
         """,
         unsafe_allow_html=True
@@ -546,9 +670,9 @@ if st.session_state.dropoff is not None:
     st.markdown(
         f"""
         <div class="location-box">
-        <b>Dropoff:</b>
-        {st.session_state.dropoff[0]:.5f},
-        {st.session_state.dropoff[1]:.5f}
+            <b>Dropoff:</b>
+            {st.session_state.dropoff[0]:.5f},
+            {st.session_state.dropoff[1]:.5f}
         </div>
         """,
         unsafe_allow_html=True
@@ -559,16 +683,20 @@ if st.session_state.dropoff is not None:
 # Reset Locations
 # =========================================================
 
-if st.button("Reset Locations"):
+if st.button(
+    "Reset Locations",
+    use_container_width=True
+):
 
     st.session_state.pickup = None
     st.session_state.dropoff = None
+    st.session_state.last_map_click = None
 
     st.rerun()
 
 
 # =========================================================
-# Prediction
+# Fare Prediction
 # =========================================================
 
 st.markdown(
@@ -583,6 +711,10 @@ if st.button(
 ):
 
     try:
+
+        # =================================================
+        # Check Locations
+        # =================================================
 
         if (
             st.session_state.pickup is None
@@ -608,7 +740,7 @@ if st.button(
 
 
         # =================================================
-        # Distance
+        # Trip Distance
         # =================================================
 
         distance = haversine_distance(
@@ -787,7 +919,6 @@ if st.button(
         st.info(
             f"Trip Distance: {distance:.2f} km"
         )
-
 
         st.info(
             f"Bearing: {bearing:.2f} degrees"
