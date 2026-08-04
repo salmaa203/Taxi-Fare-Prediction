@@ -217,7 +217,7 @@ def calculate_bearing(lat1, lon1, lat2, lon2):
 
 
 # =========================================================
-# NYC Landmarks
+# Landmarks
 # =========================================================
 
 JFK_COORD = (40.6413, -73.7781)
@@ -255,9 +255,7 @@ st.markdown(
 )
 
 
-# IMPORTANT:
-# Dataset is based on New York.
-# Therefore, use New York local time.
+# Get current date and time in NY
 now = datetime.now(ZoneInfo("America/New_York"))
 
 hour = now.hour
@@ -298,9 +296,9 @@ with col2:
     st.markdown(
         f"""
         <div class="info-card">
-            Current New York Date & Time<br>
+            Current Date & Time<br>
             <strong>
-                {weekday_name}, {day:02d}/{month:02d}/{year}
+                {weekday_name}, {day}/{month}/{year}
                 — {hour:02d}:{now.minute:02d}
             </strong>
         </div>
@@ -481,13 +479,11 @@ if map_data and map_data.get("last_clicked"):
     if st.session_state.pickup is None:
 
         st.session_state.pickup = clicked_location
-
         st.rerun()
 
     elif st.session_state.dropoff is None:
 
         st.session_state.dropoff = clicked_location
-
         st.rerun()
 
 
@@ -720,7 +716,6 @@ if st.button("Predict Taxi Fare"):
                 "is_rush_hour": [
                     is_rush_hour
                 ]
-
             })
 
 
@@ -767,6 +762,7 @@ if st.button("Predict Taxi Fare"):
                 f'</div>',
                 unsafe_allow_html=True
             )
+
 
             st.markdown(
                 f'<div class="info-card">'
