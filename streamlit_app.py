@@ -6,7 +6,6 @@ import folium
 from streamlit_folium import st_folium
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from geopy.geocoders import Nominatim
 
 
 # =========================================================
@@ -156,7 +155,7 @@ def load_models():
 try:
     model, scaler = load_models()
 except Exception as e:
-    st.error("Could not load the model or scaler.")
+    st.error("Could not load the model or scaler. Please make sure .pkl files exist in the main repository directory.")
     st.error(str(e))
     st.stop()
 
@@ -164,17 +163,6 @@ except Exception as e:
 # =========================================================
 # Helper Functions
 # =========================================================
-
-def get_address_from_coords(lat, lon):
-    try:
-        geolocator = Nominatim(user_agent="taxi_fare_app")
-        location = geolocator.reverse((lat, lon), timeout=5)
-        if location:
-            return location.address
-    except Exception:
-        pass
-    return f"Lat: {lat:.4f}, Lon: {lon:.4f}"
-
 
 def haversine_distance(lat1, lon1, lat2, lon2):
     r = 6371.0
@@ -354,11 +342,11 @@ with col3:
 
 
 # =========================================================
-# Map Selection
+# Map
 # =========================================================
 
 st.markdown(
-    '<div class="section-title">Select Route on Map</div>',
+    '<div class="section-title">Select Route</div>',
     unsafe_allow_html=True
 )
 
@@ -420,47 +408,6 @@ if map_data and map_data.get("last_clicked"):
     elif st.session_state.dropoff is None:
         st.session_state.dropoff = clicked_location
         st.rerun()
-
-
-# =========================================================
-# Selected Locations Display (Addresses)
-# =========================================================
-
-col_p, col_d = st.columns(2)
-
-with col_p:
-    pickup_address = "Not Selected"
-    if st.session_state.pickup:
-        pickup_address = get_address_from_coords(
-            st.session_state.pickup[0],
-            st.session_state.pickup[1]
-        )
-    st.markdown(
-        f"""
-        <div class="info-card">
-            📍 <strong>Pickup Location:</strong><br>
-            {pickup_address}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with col_d:
-    dropoff_address = "Not Selected"
-    if st.session_state.dropoff:
-        dropoff_address = get_address_from_coords(
-            st.session_state.dropoff[0],
-            st.session_state.dropoff[1]
-        )
-    st.markdown(
-        f"""
-        <div class="info-card">
-            🏁 <strong>Dropoff Location:</strong><br>
-            {dropoff_address}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
 
 
 # =========================================================
