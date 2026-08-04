@@ -24,129 +24,117 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-    /* Main background */
-    .stApp {
-        background: linear-gradient(135deg, #0f172a, #172554);
-        color: #f8fafc;
-    }
+.stApp {
+    background: linear-gradient(135deg, #0f172a, #172554);
+    color: #f8fafc;
+}
 
-    /* Main content */
-    .block-container {
-        max-width: 1200px;
-        padding-top: 2rem;
-        padding-bottom: 3rem;
-    }
+.block-container {
+    max-width: 1200px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
 
-    /* Main title */
-    .main-title {
-        text-align: center;
-        color: #ffffff;
-        font-size: 42px;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
+.main-title {
+    text-align: center;
+    color: #ffffff;
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
 
-    .subtitle {
-        text-align: center;
-        color: #cbd5e1;
-        font-size: 17px;
-        margin-bottom: 35px;
-    }
+.subtitle {
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 17px;
+    margin-bottom: 35px;
+}
 
-    /* Section titles */
-    .section-title {
-        color: #60a5fa;
-        font-size: 25px;
-        font-weight: 600;
-        margin-top: 25px;
-        margin-bottom: 15px;
-    }
+.section-title {
+    color: #60a5fa;
+    font-size: 25px;
+    font-weight: 600;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
 
-    /* Labels */
-    label {
-        color: #e2e8f0 !important;
-        font-weight: 500 !important;
-    }
+label {
+    color: #e2e8f0 !important;
+    font-weight: 500 !important;
+}
 
-    /* Input text */
-    input {
-        color: #111827 !important;
-    }
+input {
+    color: #111827 !important;
+}
 
-    /* Selectbox text */
-    div[data-baseweb="select"] {
-        color: #111827 !important;
-    }
+div[data-baseweb="select"] {
+    color: #111827 !important;
+}
 
-    div[data-baseweb="select"] > div {
-        background-color: #f8fafc !important;
-        border-radius: 10px !important;
-    }
+div[data-baseweb="select"] > div {
+    background-color: #f8fafc !important;
+    border-radius: 10px !important;
+}
 
-    /* Number input */
-    div[data-testid="stNumberInput"] input {
-        background-color: #f8fafc !important;
-        border-radius: 10px !important;
-    }
+div[data-testid="stNumberInput"] input {
+    background-color: #f8fafc !important;
+    border-radius: 10px !important;
+}
 
-    /* Buttons */
-    .stButton > button {
-        width: 100%;
-        background: #2563eb;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 12px;
-        font-size: 17px;
-        font-weight: 600;
-    }
+.stButton > button {
+    width: 100%;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 17px;
+    font-weight: 600;
+}
 
-    .stButton > button:hover {
-        background: #1d4ed8;
-        color: white;
-    }
+.stButton > button:hover {
+    background: #1d4ed8;
+    color: white;
+}
 
-    /* Result card */
-    .result-card {
-        background: linear-gradient(135deg, #2563eb, #1e40af);
-        padding: 30px;
-        border-radius: 18px;
-        text-align: center;
-        margin-top: 30px;
-        margin-bottom: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-    }
+.result-card {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    padding: 30px;
+    border-radius: 18px;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
 
-    .result-title {
-        color: white;
-        font-size: 22px;
-        font-weight: 500;
-        margin-bottom: 10px;
-    }
+.result-title {
+    color: white;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
 
-    .result-price {
-        color: white;
-        font-size: 42px;
-        font-weight: 700;
-    }
+.result-price {
+    color: white;
+    font-size: 42px;
+    font-weight: 700;
+}
 
-    /* Information cards */
-    .info-card {
-        background: rgba(30, 58, 95, 0.8);
-        padding: 18px;
-        border-radius: 12px;
-        margin-top: 12px;
-        color: #dbeafe;
-        font-size: 17px;
-    }
+.info-card {
+    background: rgba(30, 58, 95, 0.8);
+    padding: 18px;
+    border-radius: 12px;
+    margin-top: 12px;
+    color: #dbeafe;
+    font-size: 17px;
+}
 
-    /* Footer */
-    .footer {
-        text-align: center;
-        color: #94a3b8;
-        margin-top: 40px;
-        font-size: 14px;
-    }
+.footer {
+    text-align: center;
+    color: #94a3b8;
+    margin-top: 40px;
+    font-size: 14px;
+}
 
 </style>
 """, unsafe_allow_html=True)
@@ -267,6 +255,7 @@ st.markdown(
 
 col1, col2, col3 = st.columns(3)
 
+
 with col1:
 
     passenger_count = st.number_input(
@@ -284,6 +273,7 @@ with col1:
         value=12,
         step=1
     )
+
 
 with col2:
 
@@ -303,22 +293,10 @@ with col2:
         step=1
     )
 
+
 with col3:
 
-    weekday_name = st.selectbox(
-        "Weekday",
-        [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday"
-        ]
-    )
-
-    weekday = [
+    weekday_names = [
         "Monday",
         "Tuesday",
         "Wednesday",
@@ -326,7 +304,14 @@ with col3:
         "Friday",
         "Saturday",
         "Sunday"
-    ].index(weekday_name)
+    ]
+
+    weekday_name = st.selectbox(
+        "Weekday",
+        weekday_names
+    )
+
+    weekday = weekday_names.index(weekday_name)
 
     year = st.number_input(
         "Year",
@@ -348,6 +333,7 @@ st.markdown(
 
 col1, col2, col3 = st.columns(3)
 
+
 with col1:
 
     car_condition_name = st.selectbox(
@@ -367,7 +353,9 @@ with col1:
         "Very Good": 3
     }
 
-    car_condition = car_condition_map[car_condition_name]
+    car_condition = car_condition_map[
+        car_condition_name
+    ]
 
 
 with col2:
@@ -391,7 +379,9 @@ with col2:
         "Windy": 4
     }
 
-    weather = weather_map[weather_name]
+    weather = weather_map[
+        weather_name
+    ]
 
 
 with col3:
@@ -411,7 +401,9 @@ with col3:
         "Flow Traffic": 2
     }
 
-    traffic = traffic_map[traffic_name]
+    traffic = traffic_map[
+        traffic_name
+    ]
 
 
 # =========================================================
@@ -429,7 +421,9 @@ st.write(
 )
 
 
-# Store locations in session state
+# =========================================================
+# Session State
+# =========================================================
 
 if "pickup" not in st.session_state:
     st.session_state.pickup = None
@@ -438,7 +432,9 @@ if "dropoff" not in st.session_state:
     st.session_state.dropoff = None
 
 
-# Create map
+# =========================================================
+# Create Map
+# =========================================================
 
 m = folium.Map(
     location=[40.7128, -74.0060],
@@ -447,7 +443,9 @@ m = folium.Map(
 )
 
 
-# Existing pickup marker
+# =========================================================
+# Pickup Marker
+# =========================================================
 
 if st.session_state.pickup is not None:
 
@@ -462,7 +460,9 @@ if st.session_state.pickup is not None:
     ).add_to(m)
 
 
-# Existing dropoff marker
+# =========================================================
+# Dropoff Marker
+# =========================================================
 
 if st.session_state.dropoff is not None:
 
@@ -477,15 +477,15 @@ if st.session_state.dropoff is not None:
     ).add_to(m)
 
 
-# Display map
+# =========================================================
+# Display Map
+# =========================================================
 
 map_data = st_folium(
     m,
     width=None,
     height=500,
-    returned_objects=[
-        "last_clicked"
-    ]
+    returned_objects=["last_clicked"]
 )
 
 
@@ -517,39 +517,7 @@ if map_data and map_data.get("last_clicked"):
 
 
 # =========================================================
-# Display Selected Locations
-# =========================================================
-
-if st.session_state.pickup is not None:
-
-    st.markdown(
-        f"""
-        <div class="info-card">
-        Pickup Location:
-        {st.session_state.pickup[0]:.5f},
-        {st.session_state.pickup[1]:.5f}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-if st.session_state.dropoff is not None:
-
-    st.markdown(
-        f"""
-        <div class="info-card">
-        Dropoff Location:
-        {st.session_state.dropoff[0]:.5f},
-        {st.session_state.dropoff[1]:.5f}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-# =========================================================
-# Reset Route Button
+# Reset Route
 # =========================================================
 
 if st.button("Reset Locations"):
@@ -588,7 +556,7 @@ if st.button("Predict Taxi Fare"):
         try:
 
             # -------------------------------------------------
-            # Get Coordinates
+            # Coordinates
             # -------------------------------------------------
 
             pickup_latitude = st.session_state.pickup[0]
@@ -779,6 +747,7 @@ if st.button("Predict Taxi Fare"):
                 "is_rush_hour": [
                     is_rush_hour
                 ]
+
             })
 
 
@@ -799,7 +768,7 @@ if st.button("Predict Taxi Fare"):
 
 
             # -------------------------------------------------
-            # Result
+            # Result Card
             # -------------------------------------------------
 
             st.markdown(
@@ -853,16 +822,11 @@ if st.button("Predict Taxi Fare"):
 # =========================================================
 # Footer
 # =========================================================
-st.markdown(
-    f"""
-    <div class="result-card">
-        <div class="result-title">
-            Estimated Taxi Fare
-        </div>
 
-        <div class="result-price">
-            ${fare:.2f}
-        </div>
+st.markdown(
+    """
+    <div class="footer">
+        Machine Learning Deployment Project
     </div>
     """,
     unsafe_allow_html=True
