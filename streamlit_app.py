@@ -15,7 +15,6 @@ from zoneinfo import ZoneInfo
 
 st.set_page_config(
     page_title="Taxi Fare Prediction",
-    page_icon="🚕",
     layout="wide"
 )
 
@@ -379,7 +378,10 @@ m = folium.Map(
 )
 
 # 🔍 إضافة علامة/زر البحث إلى الخريطة
-Geocoder().add_to(m)
+try:
+    Geocoder(add_marker=True).add_to(m)
+except Exception:
+    pass
 
 # Pickup Marker
 if st.session_state.pickup is not None:
