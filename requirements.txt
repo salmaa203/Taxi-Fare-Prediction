@@ -1,9 +1,7 @@
-Flask==3.1.0
-gunicorn
-joblib
-numpy
-pandas
-scikit-learn
 streamlit
+pandas
+numpy
+scikit-learn
+joblib
 folium
 streamlit-folium
