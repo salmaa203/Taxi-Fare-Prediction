@@ -853,12 +853,16 @@ if st.button("Predict Taxi Fare"):
 # =========================================================
 # Footer
 # =========================================================
-
 st.markdown(
-    """
-    <div class="footer">
-        Machine Learning Deployment Project using
-        Flask, Streamlit, Scikit-Learn and Python
+    f"""
+    <div class="result-card">
+        <div class="result-title">
+            Estimated Taxi Fare
+        </div>
+
+        <div class="result-price">
+            ${fare:.2f}
+        </div>
     </div>
     """,
     unsafe_allow_html=True
