@@ -2,6 +2,6 @@ streamlit
 pandas
 numpy
 joblib
+scikit-learn
 folium
 streamlit-folium
-scikit-learn
