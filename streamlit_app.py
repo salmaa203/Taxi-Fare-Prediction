@@ -6,6 +6,7 @@ import folium
 from streamlit_folium import st_folium
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from geopy.geocoders import Nominatim
 
 
 # =========================================================
@@ -163,6 +164,17 @@ except Exception as e:
 # =========================================================
 # Helper Functions
 # =========================================================
+
+def get_address_from_coords(lat, lon):
+    try:
+        geolocator = Nominatim(user_agent="taxi_fare_app")
+        location = geolocator.reverse((lat, lon), timeout=5)
+        if location:
+            return location.address
+    except Exception:
+        pass
+    return f"Lat: {lat:.4f}, Lon: {lon:.4f}"
+
 
 def haversine_distance(lat1, lon1, lat2, lon2):
     r = 6371.0
@@ -342,54 +354,6 @@ with col3:
 
 
 # =========================================================
-# Selected Coordinates Display / Manual Inputs
-# =========================================================
-
-st.markdown(
-    '<div class="section-title">Selected Coordinates</div>',
-    unsafe_allow_html=True
-)
-
-if "pickup" not in st.session_state:
-    st.session_state.pickup = None
-
-if "dropoff" not in st.session_state:
-    st.session_state.dropoff = None
-
-col_p, col_d = st.columns(2)
-
-with col_p:
-    st.markdown("**Pickup Location**")
-    p_lat = st.number_input(
-        "Pickup Latitude",
-        value=st.session_state.pickup[0] if st.session_state.pickup else 0.0,
-        format="%.6f"
-    )
-    p_lon = st.number_input(
-        "Pickup Longitude",
-        value=st.session_state.pickup[1] if st.session_state.pickup else 0.0,
-        format="%.6f"
-    )
-    if p_lat != 0.0 and p_lon != 0.0:
-        st.session_state.pickup = (p_lat, p_lon)
-
-with col_d:
-    st.markdown("**Dropoff Location**")
-    d_lat = st.number_input(
-        "Dropoff Latitude",
-        value=st.session_state.dropoff[0] if st.session_state.dropoff else 0.0,
-        format="%.6f"
-    )
-    d_lon = st.number_input(
-        "Dropoff Longitude",
-        value=st.session_state.dropoff[1] if st.session_state.dropoff else 0.0,
-        format="%.6f"
-    )
-    if d_lat != 0.0 and d_lon != 0.0:
-        st.session_state.dropoff = (d_lat, d_lon)
-
-
-# =========================================================
 # Map Selection
 # =========================================================
 
@@ -402,6 +366,12 @@ st.write(
     "Click once on the map to select Pickup, "
     "then click again to select Dropoff."
 )
+
+if "pickup" not in st.session_state:
+    st.session_state.pickup = None
+
+if "dropoff" not in st.session_state:
+    st.session_state.dropoff = None
 
 m = folium.Map(
     location=[40.7128, -74.0060],
@@ -453,6 +423,47 @@ if map_data and map_data.get("last_clicked"):
 
 
 # =========================================================
+# Selected Locations Display (Addresses)
+# =========================================================
+
+col_p, col_d = st.columns(2)
+
+with col_p:
+    pickup_address = "Not Selected"
+    if st.session_state.pickup:
+        pickup_address = get_address_from_coords(
+            st.session_state.pickup[0],
+            st.session_state.pickup[1]
+        )
+    st.markdown(
+        f"""
+        <div class="info-card">
+            📍 <strong>Pickup Location:</strong><br>
+            {pickup_address}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with col_d:
+    dropoff_address = "Not Selected"
+    if st.session_state.dropoff:
+        dropoff_address = get_address_from_coords(
+            st.session_state.dropoff[0],
+            st.session_state.dropoff[1]
+        )
+    st.markdown(
+        f"""
+        <div class="info-card">
+            🏁 <strong>Dropoff Location:</strong><br>
+            {dropoff_address}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# =========================================================
 # Reset Locations
 # =========================================================
 
@@ -473,7 +484,7 @@ st.markdown(
 
 if st.button("Predict Taxi Fare"):
     if st.session_state.pickup is None or st.session_state.dropoff is None:
-        st.warning("Please select both Pickup and Dropoff locations on the map or enter coordinates.")
+        st.warning("Please select both Pickup and Dropoff locations on the map.")
     else:
         try:
             pickup_latitude = st.session_state.pickup[0]
