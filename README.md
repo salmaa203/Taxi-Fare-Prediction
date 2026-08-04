@@ -63,20 +63,7 @@ Users can:
 - Streamlit-Folium
 - Geopy
 - Timezone handling with `tzdata`
-
-## Project Structure
-
-```text
-Taxi-Fare-Prediction/
-│
-├── streamlit_app.py
-├── TaxiFarePredictionModel.pkl
-├── TaxiFareScaler.pkl
-├── requirements.txt
-├── README.md
-└── .gitignore
-
-
+  
 ## Live Demo
 
 [Taxi Fare Prediction App](https://taxi-fare-prediction-g9tm7nawkeq8jc7seimyxo.streamlit.app/)
