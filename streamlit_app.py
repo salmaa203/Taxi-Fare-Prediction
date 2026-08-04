@@ -6,6 +6,7 @@ import folium
 from streamlit_folium import st_folium
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from geopy.geocoders import Nominatim
 
 
 # =========================================================
@@ -163,6 +164,18 @@ except Exception as e:
 # =========================================================
 # Helper Functions
 # =========================================================
+
+@st.cache_data
+def get_location_name(lat, lon):
+    try:
+        geolocator = Nominatim(user_agent="nyc_taxi_app")
+        location = geolocator.reverse((lat, lon), timeout=5)
+        if location and location.address:
+            return location.address
+    except Exception:
+        pass
+    return f"Lat: {lat:.4f}, Lon: {lon:.4f}"
+
 
 def haversine_distance(lat1, lon1, lat2, lon2):
     r = 6371.0
@@ -342,7 +355,7 @@ with col3:
 
 
 # =========================================================
-# Map
+# Map Selection
 # =========================================================
 
 st.markdown(
@@ -408,6 +421,55 @@ if map_data and map_data.get("last_clicked"):
     elif st.session_state.dropoff is None:
         st.session_state.dropoff = clicked_location
         st.rerun()
+
+
+# =========================================================
+# Selected Locations Name Display
+# =========================================================
+
+col_p, col_d = st.columns(2)
+
+with col_p:
+    if st.session_state.pickup is not None:
+        p_name = get_location_name(st.session_state.pickup[0], st.session_state.pickup[1])
+        st.markdown(
+            f"""
+            <div class="info-card">
+                🟢 <strong>Pickup Location:</strong><br>{p_name}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    else:
+        st.markdown(
+            """
+            <div class="info-card">
+                🟢 <strong>Pickup Location:</strong> Not selected yet
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+with col_d:
+    if st.session_state.dropoff is not None:
+        d_name = get_location_name(st.session_state.dropoff[0], st.session_state.dropoff[1])
+        st.markdown(
+            f"""
+            <div class="info-card">
+                🔴 <strong>Dropoff Location:</strong><br>{d_name}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    else:
+        st.markdown(
+            """
+            <div class="info-card">
+                🔴 <strong>Dropoff Location:</strong> Not selected yet
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 
 # =========================================================
