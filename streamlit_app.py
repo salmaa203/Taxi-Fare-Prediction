@@ -8,280 +8,188 @@ from streamlit_folium import st_folium
 
 
 # =========================================================
-# Page Configuration
+# PAGE CONFIGURATION
 # =========================================================
 
 st.set_page_config(
     page_title="Taxi Fare Prediction",
     page_icon="Taxi",
-    layout="centered"
+    layout="wide"
 )
 
 
 # =========================================================
-# Custom CSS
+# CUSTOM CSS
 # =========================================================
 
-st.markdown("""
-<style>
+st.markdown(
+    """
+    <style>
 
-    /* =========================
-       Main Background
-       ========================= */
-
+    /* Main background */
     .stApp {
         background: linear-gradient(
             135deg,
-            #0b1220 0%,
-            #111c38 50%,
-            #0b1220 100%
+            #0b1733 0%,
+            #122653 50%,
+            #0b1733 100%
         );
     }
 
-
-    /* =========================
-       Main Container
-       ========================= */
-
+    /* Main content width */
     .block-container {
-        max-width: 1000px;
-        padding-top: 3rem;
-        padding-bottom: 3rem;
+        max-width: 1200px;
+        padding-top: 40px;
+        padding-bottom: 50px;
     }
 
-
-    /* =========================
-       Title
-       ========================= */
-
+    /* Main title */
     .main-title {
         text-align: center;
-        color: #f8fafc;
+        color: #ffffff;
         font-size: 42px;
         font-weight: 700;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
 
     .subtitle {
         text-align: center;
-        color: #cbd5e1;
-        font-size: 17px;
+        color: #c9d6ee;
+        font-size: 18px;
         margin-bottom: 35px;
     }
 
-
-    /* =========================
-       Section Titles
-       ========================= */
-
-    .section-title {
-        color: #f1f5f9;
-        font-size: 25px;
-        font-weight: 600;
-        margin-top: 25px;
-        margin-bottom: 18px;
-
-        border-left: 4px solid #3b82f6;
-        padding-left: 12px;
+    /* Section titles */
+    h2 {
+        color: #ffffff !important;
+        font-weight: 600 !important;
     }
 
-
-    /* =========================
-       Labels
-       ========================= */
-
+    /* Labels */
     label {
-        color: #f1f5f9 !important;
+        color: #e8eef9 !important;
         font-weight: 500 !important;
     }
 
-
-    /* =========================
-       Number Inputs
-       ========================= */
-
+    /* Input containers */
     div[data-baseweb="input"] {
-        background-color: #f8fafc !important;
-        border-radius: 10px;
+        background-color: #f4f6fa !important;
+        border-radius: 10px !important;
     }
-
-    div[data-baseweb="input"] input {
-        color: #111827 !important;
-        background-color: #f8fafc !important;
-    }
-
-
-    /* =========================
-       Select Boxes
-       ========================= */
 
     div[data-baseweb="select"] {
-        background-color: #f8fafc !important;
-        border-radius: 10px;
+        background-color: #f4f6fa !important;
+        border-radius: 10px !important;
     }
 
-    div[data-baseweb="select"] > div {
-        background-color: #f8fafc !important;
+    /* Input text */
+    input {
+        color: #17233f !important;
     }
 
-    div[data-baseweb="select"] span {
-        color: #111827 !important;
+    /* Select text */
+    div[data-baseweb="select"] div {
+        color: #17233f !important;
     }
 
-    div[data-baseweb="select"] input {
-        color: #111827 !important;
-    }
-
-
-    /* Dropdown menu */
-
-    ul[role="listbox"] {
-        background-color: #ffffff !important;
-    }
-
-    li[role="option"] {
-        color: #111827 !important;
-        background-color: #ffffff !important;
-    }
-
-    li[role="option"]:hover {
-        background-color: #e2e8f0 !important;
-        color: #111827 !important;
-    }
-
-
-    /* =========================
-       Help Icon
-       ========================= */
-
-    [data-testid="stTooltipIcon"] {
-        color: #cbd5e1 !important;
-    }
-
-
-    /* =========================
-       Map Card
-       ========================= */
-
-    .map-card {
-        background: #111c38;
-        padding: 20px;
-        border-radius: 16px;
-        border: 1px solid #334155;
-        margin-top: 10px;
-        margin-bottom: 20px;
-    }
-
-    .map-description {
-        color: #cbd5e1;
-        font-size: 15px;
-        margin-bottom: 15px;
-    }
-
-
-    /* =========================
-       Location Boxes
-       ========================= */
-
-    .location-box {
-        background: #172554;
-        border: 1px solid #334155;
-        border-radius: 12px;
-        padding: 12px 16px;
-        color: #e2e8f0;
-        margin-top: 8px;
-    }
-
-
-    /* =========================
-       Prediction Result
-       ========================= */
-
-    .result-box {
-        background: linear-gradient(
-            135deg,
-            #1d4ed8,
-            #2563eb
-        );
-
-        padding: 25px;
-        border-radius: 16px;
-        text-align: center;
-        margin-top: 25px;
-
-        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
-    }
-
-    .result-title {
-        color: #bfdbfe;
-        font-size: 16px;
-        margin-bottom: 5px;
-    }
-
-    .result-price {
-        color: white;
-        font-size: 36px;
-        font-weight: 700;
-    }
-
-
-    /* =========================
-       Buttons
-       ========================= */
-
+    /* Buttons */
     .stButton > button {
         width: 100%;
         background: #2563eb;
-        color: white !important;
+        color: white;
         border: none;
         border-radius: 10px;
-        padding: 12px;
+        padding: 12px 20px;
         font-size: 17px;
         font-weight: 600;
-        transition: 0.2s;
+        transition: 0.3s;
     }
 
     .stButton > button:hover {
         background: #1d4ed8;
-        color: white !important;
-        border: none;
+        color: white;
     }
 
-
-    /* =========================
-       Warning / Info Messages
-       ========================= */
-
-    div[data-testid="stAlert"] {
-        border-radius: 10px;
+    /* Prediction result */
+    .prediction-box {
+        background: linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+        padding: 30px;
+        border-radius: 18px;
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     }
 
+    .prediction-title {
+        color: white;
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
 
-    /* =========================
-       Footer
-       ========================= */
+    .prediction-price {
+        color: white;
+        font-size: 42px;
+        font-weight: 700;
+    }
 
+    /* Information boxes */
+    .info-box {
+        background: #122653;
+        border: 1px solid #244274;
+        border-radius: 12px;
+        padding: 18px;
+        color: #dbe7fb;
+        margin-top: 12px;
+        font-size: 17px;
+    }
+
+    /* Footer */
     .footer {
         text-align: center;
-        color: #94a3b8;
-        font-size: 13px;
-        margin-top: 40px;
-        padding-top: 20px;
-        border-top: 1px solid #334155;
+        color: #9fb1cf;
+        margin-top: 45px;
+        font-size: 14px;
     }
 
-</style>
-""", unsafe_allow_html=True)
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # =========================================================
-# Load Model and Scaler
+# TITLE
+# =========================================================
+
+st.markdown(
+    '<div class="main-title">Taxi Fare Prediction</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div class="subtitle">'
+    'Select your pickup and dropoff locations on the map '
+    'and enter the trip details to estimate the taxi fare.'
+    '</div>',
+    unsafe_allow_html=True
+)
+
+
+# =========================================================
+# LOAD MODEL AND SCALER
 # =========================================================
 
 @st.cache_resource
 def load_models():
 
     model = joblib.load("TaxiFarePredictionModel.pkl")
+
     scaler = joblib.load("TaxiFareScaler.pkl")
 
     return model, scaler
@@ -291,7 +199,21 @@ model, scaler = load_models()
 
 
 # =========================================================
-# Helper Functions
+# SESSION STATE
+# =========================================================
+
+if "pickup" not in st.session_state:
+    st.session_state.pickup = None
+
+if "dropoff" not in st.session_state:
+    st.session_state.dropoff = None
+
+if "last_click" not in st.session_state:
+    st.session_state.last_click = None
+
+
+# =========================================================
+# HELPER FUNCTIONS
 # =========================================================
 
 def haversine_distance(lat1, lon1, lat2, lon2):
@@ -308,7 +230,8 @@ def haversine_distance(lat1, lon1, lat2, lon2):
 
     a = (
         np.sin(dlat / 2.0) ** 2
-        + np.cos(lat1)
+        +
+        np.cos(lat1)
         * np.cos(lat2)
         * np.sin(dlon / 2.0) ** 2
     )
@@ -331,60 +254,42 @@ def calculate_bearing(lat1, lon1, lat2, lon2):
 
     y = (
         np.cos(lat1) * np.sin(lat2)
-        - np.sin(lat1)
+        -
+        np.sin(lat1)
         * np.cos(lat2)
         * np.cos(dlon)
     )
 
     initial_bearing = np.arctan2(x, y)
 
-    return np.degrees(initial_bearing)
+    bearing = np.degrees(initial_bearing)
+
+    return bearing
 
 
 # =========================================================
-# Landmarks
+# LANDMARK COORDINATES
 # =========================================================
 
 JFK_COORD = (40.6413, -73.7781)
+
 EWR_COORD = (40.6895, -74.1745)
+
 LGA_COORD = (40.7769, -73.8740)
+
 SOL_COORD = (40.6892, -74.0445)
+
 NYC_COORD = (40.7128, -74.0060)
 
 
 # =========================================================
-# Header
+# TRIP INFORMATION
 # =========================================================
 
-st.markdown(
-    '<div class="main-title">Taxi Fare Prediction</div>',
-    unsafe_allow_html=True
-)
+st.header("Trip Information")
 
-st.markdown(
-    '<div class="subtitle">'
-    'Select your route and trip details to estimate the taxi fare.'
-    '</div>',
-    unsafe_allow_html=True
-)
+col1, col2, col3 = st.columns(3)
 
-
-# =========================================================
-# Trip Information
-# =========================================================
-
-st.markdown(
-    '<div class="section-title">Trip Information</div>',
-    unsafe_allow_html=True
-)
-
-
-col1, col2 = st.columns(2)
-
-
-# =========================================================
-# Left Column
-# =========================================================
 
 with col1:
 
@@ -396,6 +301,9 @@ with col1:
         step=1
     )
 
+
+with col2:
+
     hour = st.number_input(
         "Hour",
         min_value=0,
@@ -404,26 +312,31 @@ with col1:
         step=1
     )
 
+
+with col3:
+
     day = st.number_input(
         "Day",
         min_value=1,
         max_value=31,
-        value=1,
+        value=15,
         step=1
     )
+
+
+col1, col2, col3 = st.columns(3)
+
+
+with col1:
 
     month = st.number_input(
         "Month",
         min_value=1,
         max_value=12,
-        value=1,
+        value=6,
         step=1
     )
 
-
-# =========================================================
-# Right Column
-# =========================================================
 
 with col2:
 
@@ -440,25 +353,42 @@ with col2:
         ]
     )
 
-    weekday = {
-        "Monday": 0,
-        "Tuesday": 1,
-        "Wednesday": 2,
-        "Thursday": 3,
-        "Friday": 4,
-        "Saturday": 5,
-        "Sunday": 6
-    }[weekday_name]
 
+with col3:
 
     year = st.number_input(
         "Year",
         min_value=2009,
         max_value=2030,
-        value=2026,
+        value=2009,
         step=1
     )
 
+
+# Convert weekday name to number
+weekday_mapping = {
+    "Monday": 0,
+    "Tuesday": 1,
+    "Wednesday": 2,
+    "Thursday": 3,
+    "Friday": 4,
+    "Saturday": 5,
+    "Sunday": 6
+}
+
+weekday = weekday_mapping[weekday_name]
+
+
+# =========================================================
+# TRIP CONDITIONS
+# =========================================================
+
+st.header("Trip Conditions")
+
+col1, col2, col3 = st.columns(3)
+
+
+with col1:
 
     car_condition_name = st.selectbox(
         "Car Condition",
@@ -470,13 +400,8 @@ with col2:
         ]
     )
 
-    car_condition = {
-        "Bad": 0,
-        "Excellent": 1,
-        "Good": 2,
-        "Very Good": 3
-    }[car_condition_name]
 
+with col2:
 
     weather_name = st.selectbox(
         "Weather",
@@ -489,14 +414,8 @@ with col2:
         ]
     )
 
-    weather = {
-        "Cloudy": 0,
-        "Rainy": 1,
-        "Stormy": 2,
-        "Sunny": 3,
-        "Windy": 4
-    }[weather_name]
 
+with col3:
 
     traffic_name = st.selectbox(
         "Traffic Condition",
@@ -507,116 +426,119 @@ with col2:
         ]
     )
 
-    traffic = {
-        "Congested Traffic": 0,
-        "Dense Traffic": 1,
-        "Flow Traffic": 2
-    }[traffic_name]
+
+# Convert categorical values to the same encoding
+# used during model training
+
+car_condition_mapping = {
+    "Bad": 0,
+    "Excellent": 1,
+    "Good": 2,
+    "Very Good": 3
+}
+
+weather_mapping = {
+    "Cloudy": 0,
+    "Rainy": 1,
+    "Stormy": 2,
+    "Sunny": 3,
+    "Windy": 4
+}
+
+traffic_mapping = {
+    "Congested Traffic": 0,
+    "Dense Traffic": 1,
+    "Flow Traffic": 2
+}
+
+car_condition = car_condition_mapping[car_condition_name]
+
+weather = weather_mapping[weather_name]
+
+traffic = traffic_mapping[traffic_name]
 
 
 # =========================================================
-# Map
+# MAP
 # =========================================================
 
-st.markdown(
-    '<div class="section-title">Select Route</div>',
-    unsafe_allow_html=True
+st.header("Select Pickup and Dropoff Locations")
+
+st.write(
+    "Click once on the map for Pickup, then click again for Dropoff."
 )
 
-st.markdown(
-    '<div class="map-card">'
-    '<div class="map-description">'
-    'Click once on the map to select your Pickup location, '
-    'then click again to select your Dropoff location.'
-    '</div>',
-    unsafe_allow_html=True
-)
 
-
-# =========================================================
-# Session State
-# =========================================================
-
-if "pickup" not in st.session_state:
-    st.session_state.pickup = None
-
-if "dropoff" not in st.session_state:
-    st.session_state.dropoff = None
-
-if "last_map_click" not in st.session_state:
-    st.session_state.last_map_click = None
-
-
-# =========================================================
-# Create Map
-# =========================================================
-
+# Create map
 m = folium.Map(
     location=[40.7128, -74.0060],
     zoom_start=11,
-    tiles="OpenStreetMap"
+    control_scale=True
 )
 
 
-# =========================================================
-# Pickup Marker
-# =========================================================
-
+# Add pickup marker
 if st.session_state.pickup is not None:
 
     folium.Marker(
-        st.session_state.pickup,
+        location=st.session_state.pickup,
         popup="Pickup Location",
         tooltip="Pickup",
         icon=folium.Icon(
-            color="green",
-            icon="play"
+            color="blue",
+            icon="info-sign"
         )
     ).add_to(m)
 
 
-# =========================================================
-# Dropoff Marker
-# =========================================================
-
+# Add dropoff marker
 if st.session_state.dropoff is not None:
 
     folium.Marker(
-        st.session_state.dropoff,
+        location=st.session_state.dropoff,
         popup="Dropoff Location",
         tooltip="Dropoff",
         icon=folium.Icon(
             color="red",
-            icon="stop"
+            icon="info-sign"
         )
     ).add_to(m)
 
 
-# =========================================================
-# Display Map
-# =========================================================
+# Add route line
+if (
+    st.session_state.pickup is not None
+    and
+    st.session_state.dropoff is not None
+):
+
+    folium.PolyLine(
+        [
+            st.session_state.pickup,
+            st.session_state.dropoff
+        ],
+        color="#2563eb",
+        weight=4,
+        opacity=0.8
+    ).add_to(m)
+
 
 map_data = st_folium(
     m,
-    width=900,
+    width=None,
     height=500,
     returned_objects=["last_clicked"]
 )
 
 
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
-
-
 # =========================================================
-# Handle Map Click
+# HANDLE MAP CLICK
 # =========================================================
 
-if map_data["last_clicked"] is not None:
+if map_data and map_data.get("last_clicked"):
 
     clicked_lat = map_data["last_clicked"]["lat"]
+
     clicked_lon = map_data["last_clicked"]["lng"]
 
     current_click = (
@@ -624,9 +546,11 @@ if map_data["last_clicked"] is not None:
         round(clicked_lon, 6)
     )
 
-    if current_click != st.session_state.last_map_click:
 
-        st.session_state.last_map_click = current_click
+    # Prevent the same click from being processed twice
+    if current_click != st.session_state.last_click:
+
+        st.session_state.last_click = current_click
 
         if st.session_state.pickup is None:
 
@@ -646,301 +570,356 @@ if map_data["last_clicked"] is not None:
 
             st.rerun()
 
+        else:
 
-# =========================================================
-# Selected Locations
-# =========================================================
-
-if st.session_state.pickup is not None:
-
-    st.markdown(
-        f"""
-        <div class="location-box">
-            <b>Pickup:</b>
-            {st.session_state.pickup[0]:.5f},
-            {st.session_state.pickup[1]:.5f}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-if st.session_state.dropoff is not None:
-
-    st.markdown(
-        f"""
-        <div class="location-box">
-            <b>Dropoff:</b>
-            {st.session_state.dropoff[0]:.5f},
-            {st.session_state.dropoff[1]:.5f}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-# =========================================================
-# Reset Locations
-# =========================================================
-
-if st.button(
-    "Reset Locations",
-    use_container_width=True
-):
-
-    st.session_state.pickup = None
-    st.session_state.dropoff = None
-    st.session_state.last_map_click = None
-
-    st.rerun()
-
-
-# =========================================================
-# Fare Prediction
-# =========================================================
-
-st.markdown(
-    '<div class="section-title">Fare Prediction</div>',
-    unsafe_allow_html=True
-)
-
-
-if st.button(
-    "Predict Taxi Fare",
-    use_container_width=True
-):
-
-    try:
-
-        # =================================================
-        # Check Locations
-        # =================================================
-
-        if (
-            st.session_state.pickup is None
-            or st.session_state.dropoff is None
-        ):
-
-            st.warning(
-                "Please select both Pickup and Dropoff locations."
+            # If both already exist,
+            # start a new route
+            st.session_state.pickup = (
+                clicked_lat,
+                clicked_lon
             )
 
-            st.stop()
+            st.session_state.dropoff = None
+
+            st.rerun()
 
 
-        # =================================================
-        # Coordinates
-        # =================================================
+# =========================================================
+# DISPLAY SELECTED LOCATIONS
+# =========================================================
 
-        pickup_latitude = st.session_state.pickup[0]
-        pickup_longitude = st.session_state.pickup[1]
-
-        dropoff_latitude = st.session_state.dropoff[0]
-        dropoff_longitude = st.session_state.dropoff[1]
+col1, col2 = st.columns(2)
 
 
-        # =================================================
-        # Trip Distance
-        # =================================================
+with col1:
 
-        distance = haversine_distance(
-            pickup_latitude,
-            pickup_longitude,
-            dropoff_latitude,
-            dropoff_longitude
-        )
-
-
-        # =================================================
-        # Bearing
-        # =================================================
-
-        bearing = calculate_bearing(
-            pickup_latitude,
-            pickup_longitude,
-            dropoff_latitude,
-            dropoff_longitude
-        )
-
-
-        # =================================================
-        # Landmark Distances
-        # =================================================
-
-        jfk_dist = haversine_distance(
-            pickup_latitude,
-            pickup_longitude,
-            JFK_COORD[0],
-            JFK_COORD[1]
-        )
-
-        ewr_dist = haversine_distance(
-            pickup_latitude,
-            pickup_longitude,
-            EWR_COORD[0],
-            EWR_COORD[1]
-        )
-
-        lga_dist = haversine_distance(
-            pickup_latitude,
-            pickup_longitude,
-            LGA_COORD[0],
-            LGA_COORD[1]
-        )
-
-        sol_dist = haversine_distance(
-            pickup_latitude,
-            pickup_longitude,
-            SOL_COORD[0],
-            SOL_COORD[1]
-        )
-
-        nyc_dist = haversine_distance(
-            pickup_latitude,
-            pickup_longitude,
-            NYC_COORD[0],
-            NYC_COORD[1]
-        )
-
-
-        # =================================================
-        # Feature Engineering
-        # =================================================
-
-        is_weekend = (
-            1 if weekday in [5, 6]
-            else 0
-        )
-
-        is_night = (
-            1 if hour >= 22 or hour <= 5
-            else 0
-        )
-
-        is_rush_hour = (
-            1 if hour in [7, 8, 9, 16, 17, 18]
-            else 0
-        )
-
-
-        # =================================================
-        # Create DataFrame
-        # =================================================
-
-        data = pd.DataFrame({
-
-            "Car Condition": [car_condition],
-
-            "Weather": [weather],
-
-            "Traffic Condition": [traffic],
-
-            "pickup_longitude": [pickup_longitude],
-
-            "pickup_latitude": [pickup_latitude],
-
-            "dropoff_longitude": [dropoff_longitude],
-
-            "dropoff_latitude": [dropoff_latitude],
-
-            "passenger_count": [passenger_count],
-
-            "hour": [hour],
-
-            "day": [day],
-
-            "month": [month],
-
-            "weekday": [weekday],
-
-            "year": [year],
-
-            "jfk_dist": [jfk_dist],
-
-            "ewr_dist": [ewr_dist],
-
-            "lga_dist": [lga_dist],
-
-            "sol_dist": [sol_dist],
-
-            "nyc_dist": [nyc_dist],
-
-            "distance": [distance],
-
-            "bearing": [bearing],
-
-            "is_weekend": [is_weekend],
-
-            "is_night": [is_night],
-
-            "is_rush_hour": [is_rush_hour]
-
-        })
-
-
-        # =================================================
-        # Scaling
-        # =================================================
-
-        data_scaled = scaler.transform(data)
-
-
-        # =================================================
-        # Prediction
-        # =================================================
-
-        prediction = model.predict(data_scaled)
-
-        fare = float(prediction[0])
-
-
-        # =================================================
-        # Result
-        # =================================================
+    if st.session_state.pickup:
 
         st.markdown(
             f"""
-            <div class="result-box">
-
-                <div class="result-title">
-                    Estimated Taxi Fare
-                </div>
-
-                <div class="result-price">
-                    ${fare:.2f}
-                </div>
-
+            <div class="info-box">
+            <strong>Pickup Location</strong><br>
+            Latitude: {st.session_state.pickup[0]:.6f}<br>
+            Longitude: {st.session_state.pickup[1]:.6f}
             </div>
             """,
             unsafe_allow_html=True
         )
 
+    else:
 
-        st.info(
-            f"Trip Distance: {distance:.2f} km"
+        st.info("Pickup location not selected yet.")
+
+
+with col2:
+
+    if st.session_state.dropoff:
+
+        st.markdown(
+            f"""
+            <div class="info-box">
+            <strong>Dropoff Location</strong><br>
+            Latitude: {st.session_state.dropoff[0]:.6f}<br>
+            Longitude: {st.session_state.dropoff[1]:.6f}
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-        st.info(
-            f"Bearing: {bearing:.2f} degrees"
-        )
+    else:
 
-
-    except Exception as e:
-
-        st.error(
-            f"Error: {str(e)}"
-        )
+        st.info("Dropoff location not selected yet.")
 
 
 # =========================================================
-# Footer
+# CLEAR LOCATIONS BUTTON
+# =========================================================
+
+if st.button("Clear Selected Locations"):
+
+    st.session_state.pickup = None
+
+    st.session_state.dropoff = None
+
+    st.session_state.last_click = None
+
+    st.rerun()
+
+
+# =========================================================
+# PREDICTION
+# =========================================================
+
+st.header("Fare Prediction")
+
+
+if st.button("Predict Taxi Fare"):
+
+    if (
+        st.session_state.pickup is None
+        or
+        st.session_state.dropoff is None
+    ):
+
+        st.error(
+            "Please select both Pickup and Dropoff locations on the map."
+        )
+
+    else:
+
+        try:
+
+            # -------------------------------------------------
+            # Get coordinates
+            # -------------------------------------------------
+
+            pickup_latitude = st.session_state.pickup[0]
+
+            pickup_longitude = st.session_state.pickup[1]
+
+            dropoff_latitude = st.session_state.dropoff[0]
+
+            dropoff_longitude = st.session_state.dropoff[1]
+
+
+            # -------------------------------------------------
+            # Calculate Trip Distance
+            # -------------------------------------------------
+
+            distance = haversine_distance(
+                pickup_latitude,
+                pickup_longitude,
+                dropoff_latitude,
+                dropoff_longitude
+            )
+
+
+            # -------------------------------------------------
+            # Calculate Bearing
+            # -------------------------------------------------
+
+            bearing = calculate_bearing(
+                pickup_latitude,
+                pickup_longitude,
+                dropoff_latitude,
+                dropoff_longitude
+            )
+
+
+            # -------------------------------------------------
+            # Landmark Distances
+            # -------------------------------------------------
+
+            jfk_dist = haversine_distance(
+                pickup_latitude,
+                pickup_longitude,
+                JFK_COORD[0],
+                JFK_COORD[1]
+            )
+
+            ewr_dist = haversine_distance(
+                pickup_latitude,
+                pickup_longitude,
+                EWR_COORD[0],
+                EWR_COORD[1]
+            )
+
+            lga_dist = haversine_distance(
+                pickup_latitude,
+                pickup_longitude,
+                LGA_COORD[0],
+                LGA_COORD[1]
+            )
+
+            sol_dist = haversine_distance(
+                pickup_latitude,
+                pickup_longitude,
+                SOL_COORD[0],
+                SOL_COORD[1]
+            )
+
+            nyc_dist = haversine_distance(
+                pickup_latitude,
+                pickup_longitude,
+                NYC_COORD[0],
+                NYC_COORD[1]
+            )
+
+
+            # -------------------------------------------------
+            # Feature Engineering
+            # -------------------------------------------------
+
+            is_weekend = (
+                1 if weekday in [5, 6]
+                else 0
+            )
+
+            is_night = (
+                1 if hour >= 22 or hour <= 5
+                else 0
+            )
+
+            is_rush_hour = (
+                1
+                if hour in [7, 8, 9, 16, 17, 18]
+                else 0
+            )
+
+
+            # -------------------------------------------------
+            # Create DataFrame
+            # -------------------------------------------------
+
+            data = pd.DataFrame({
+
+                "Car Condition": [car_condition],
+
+                "Weather": [weather],
+
+                "Traffic Condition": [traffic],
+
+                "pickup_longitude": [
+                    pickup_longitude
+                ],
+
+                "pickup_latitude": [
+                    pickup_latitude
+                ],
+
+                "dropoff_longitude": [
+                    dropoff_longitude
+                ],
+
+                "dropoff_latitude": [
+                    dropoff_latitude
+                ],
+
+                "passenger_count": [
+                    passenger_count
+                ],
+
+                "hour": [hour],
+
+                "day": [day],
+
+                "month": [month],
+
+                "weekday": [weekday],
+
+                "year": [year],
+
+                "jfk_dist": [jfk_dist],
+
+                "ewr_dist": [ewr_dist],
+
+                "lga_dist": [lga_dist],
+
+                "sol_dist": [sol_dist],
+
+                "nyc_dist": [nyc_dist],
+
+                "distance": [distance],
+
+                "bearing": [bearing],
+
+                "is_weekend": [is_weekend],
+
+                "is_night": [is_night],
+
+                "is_rush_hour": [is_rush_hour]
+
+            })
+
+
+            # -------------------------------------------------
+            # Scaling
+            # -------------------------------------------------
+
+            data_scaled = scaler.transform(data)
+
+
+            # -------------------------------------------------
+            # Prediction
+            # -------------------------------------------------
+
+            prediction = model.predict(data_scaled)
+
+            fare = float(prediction[0])
+
+
+            # -------------------------------------------------
+            # Display Result
+            # -------------------------------------------------
+
+            st.markdown(
+                f"""
+                <div class="prediction-box">
+
+                    <div class="prediction-title">
+                        Estimated Taxi Fare
+                    </div>
+
+                    <div class="prediction-price">
+                        ${fare:.2f}
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+
+            # -------------------------------------------------
+            # Trip Information
+            # -------------------------------------------------
+
+            col1, col2 = st.columns(2)
+
+
+            with col1:
+
+                st.markdown(
+                    f"""
+                    <div class="info-box">
+                    <strong>Trip Distance</strong><br>
+                    {distance:.2f} km
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+            with col2:
+
+                st.markdown(
+                    f"""
+                    <div class="info-box">
+                    <strong>Bearing</strong><br>
+                    {bearing:.2f} degrees
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+        except Exception as e:
+
+            st.error(
+                f"Prediction Error: {str(e)}"
+            )
+
+
+# =========================================================
+# FOOTER
 # =========================================================
 
 st.markdown(
     """
     <div class="footer">
-        Taxi Fare Prediction System<br>
         Machine Learning Deployment Project
+        <br>
+        Built with Python, Scikit-Learn and Streamlit
     </div>
     """,
     unsafe_allow_html=True
