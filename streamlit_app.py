@@ -5,6 +5,7 @@ import joblib
 import folium
 from streamlit_folium import st_folium
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 
 # =========================================================
@@ -146,14 +147,19 @@ div[data-testid="stNumberInput"] input {
 
 @st.cache_resource
 def load_models():
+
     model = joblib.load("TaxiFarePredictionModel.pkl")
     scaler = joblib.load("TaxiFareScaler.pkl")
+
     return model, scaler
 
 
 try:
+
     model, scaler = load_models()
+
 except Exception as e:
+
     st.error("Could not load the model or scaler.")
     st.error(str(e))
     st.stop()
@@ -164,6 +170,7 @@ except Exception as e:
 # =========================================================
 
 def haversine_distance(lat1, lon1, lat2, lon2):
+
     r = 6371.0
 
     lat1, lon1, lat2, lon2 = map(
@@ -247,8 +254,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Current date and time
-now = datetime.now()
+
+# Get current date and time in Egypt
+now = datetime.now(ZoneInfo("Africa/Cairo"))
 
 hour = now.hour
 day = now.day
@@ -268,7 +276,9 @@ weekday_names = [
 
 weekday_name = weekday_names[weekday]
 
+
 col1, col2 = st.columns(2)
+
 
 with col1:
 
@@ -280,13 +290,17 @@ with col1:
         step=1
     )
 
+
 with col2:
 
     st.markdown(
         f"""
         <div class="info-card">
             Current Date & Time<br>
-            <strong>{weekday_name}, {day}/{month}/{year} — {hour:02d}:00</strong>
+            <strong>
+                {weekday_name}, {day}/{month}/{year}
+                — {hour:02d}:{now.minute:02d}
+            </strong>
         </div>
         """,
         unsafe_allow_html=True
@@ -302,7 +316,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
 col1, col2, col3 = st.columns(3)
+
 
 with col1:
 
@@ -394,6 +410,7 @@ st.write(
 if "pickup" not in st.session_state:
     st.session_state.pickup = None
 
+
 if "dropoff" not in st.session_state:
     st.session_state.dropoff = None
 
@@ -404,6 +421,8 @@ m = folium.Map(
     tiles="OpenStreetMap"
 )
 
+
+# Pickup Marker
 
 if st.session_state.pickup is not None:
 
@@ -417,6 +436,8 @@ if st.session_state.pickup is not None:
         )
     ).add_to(m)
 
+
+# Dropoff Marker
 
 if st.session_state.dropoff is not None:
 
@@ -440,6 +461,10 @@ map_data = st_folium(
     ]
 )
 
+
+# =========================================================
+# Handle Map Click
+# =========================================================
 
 if map_data and map_data.get("last_clicked"):
 
@@ -716,8 +741,12 @@ if st.button("Predict Taxi Fare"):
 
             st.markdown(
                 f'<div class="result-card">'
-                f'<div class="result-title">Estimated Taxi Fare</div>'
-                f'<div class="result-price">${fare:.2f}</div>'
+                f'<div class="result-title">'
+                f'Estimated Taxi Fare'
+                f'</div>'
+                f'<div class="result-price">'
+                f'${fare:.2f}'
+                f'</div>'
                 f'</div>',
                 unsafe_allow_html=True
             )
@@ -733,6 +762,7 @@ if st.button("Predict Taxi Fare"):
                 f'</div>',
                 unsafe_allow_html=True
             )
+
 
             st.markdown(
                 f'<div class="info-card">'
