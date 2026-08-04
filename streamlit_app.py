@@ -6,8 +6,6 @@ import folium
 from folium.plugins import Geocoder
 from streamlit_folium import st_folium
 from datetime import datetime
-from zoneinfo import ZoneInfo
-
 
 # =========================================================
 # Page Configuration
@@ -156,7 +154,7 @@ def load_models():
 try:
     model, scaler = load_models()
 except Exception as e:
-    st.error("Could not load the model or scaler.")
+    st.error("Could not load the model or scaler. Check if .pkl files are uploaded to GitHub.")
     st.error(str(e))
     st.stop()
 
@@ -238,8 +236,12 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Get current date and time in Egypt
-now = datetime.now(ZoneInfo("Africa/Cairo"))
+# Safe DateTime handling for Streamlit Cloud
+try:
+    from zoneinfo import ZoneInfo
+    now = datetime.now(ZoneInfo("Africa/Cairo"))
+except Exception:
+    now = datetime.now()
 
 hour = now.hour
 day = now.day
@@ -377,11 +379,8 @@ m = folium.Map(
     tiles="OpenStreetMap"
 )
 
-# 🔍 إضافة علامة/زر البحث إلى الخريطة
-try:
-    Geocoder(add_marker=True).add_to(m)
-except Exception:
-    pass
+# 🔍 إضافة زر البحث
+Geocoder().add_to(m)
 
 # Pickup Marker
 if st.session_state.pickup is not None:
@@ -411,9 +410,7 @@ map_data = st_folium(
     m,
     width=None,
     height=500,
-    returned_objects=[
-        "last_clicked"
-    ]
+    key="taxi_map"
 )
 
 
@@ -429,7 +426,7 @@ if map_data and map_data.get("last_clicked"):
     if st.session_state.pickup is None:
         st.session_state.pickup = clicked_location
         st.rerun()
-    elif st.session_state.dropoff is None:
+    elif st.session_state.dropoff is None and clicked_location != st.session_state.pickup:
         st.session_state.dropoff = clicked_location
         st.rerun()
 
@@ -461,13 +458,11 @@ if st.button("Predict Taxi Fare"):
         st.warning("Please select both Pickup and Dropoff locations on the map.")
     else:
         try:
-            # Coordinates
             pickup_latitude = st.session_state.pickup[0]
             pickup_longitude = st.session_state.pickup[1]
             dropoff_latitude = st.session_state.dropoff[0]
             dropoff_longitude = st.session_state.dropoff[1]
 
-            # Distance & Bearing
             distance = haversine_distance(
                 pickup_latitude, pickup_longitude,
                 dropoff_latitude, dropoff_longitude
@@ -477,19 +472,16 @@ if st.button("Predict Taxi Fare"):
                 dropoff_latitude, dropoff_longitude
             )
 
-            # Landmark Distances
             jfk_dist = haversine_distance(pickup_latitude, pickup_longitude, JFK_COORD[0], JFK_COORD[1])
             ewr_dist = haversine_distance(pickup_latitude, pickup_longitude, EWR_COORD[0], EWR_COORD[1])
             lga_dist = haversine_distance(pickup_latitude, pickup_longitude, LGA_COORD[0], LGA_COORD[1])
             sol_dist = haversine_distance(pickup_latitude, pickup_longitude, SOL_COORD[0], SOL_COORD[1])
             nyc_dist = haversine_distance(pickup_latitude, pickup_longitude, NYC_COORD[0], NYC_COORD[1])
 
-            # Feature Engineering
             is_weekend = 1 if weekday in [5, 6] else 0
             is_night = 1 if hour >= 22 or hour <= 5 else 0
             is_rush_hour = 1 if hour in [7, 8, 9, 16, 17, 18] else 0
 
-            # Create DataFrame
             data = pd.DataFrame({
                 "Car Condition": [car_condition],
                 "Weather": [weather],
@@ -516,14 +508,10 @@ if st.button("Predict Taxi Fare"):
                 "is_rush_hour": [is_rush_hour]
             })
 
-            # Scaling
             data_scaled = scaler.transform(data)
-
-            # Prediction
             prediction = model.predict(data_scaled)
             fare = float(prediction[0])
 
-            # Result Display
             st.markdown(
                 f'<div class="result-card">'
                 f'<div class="result-title">Estimated Taxi Fare</div>'
