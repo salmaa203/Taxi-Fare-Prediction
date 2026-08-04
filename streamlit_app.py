@@ -153,9 +153,13 @@ def load_models():
 
 try:
     model, scaler = load_models()
+except FileNotFoundError as fnf:
+    st.error("لم يتم العثور على ملف الموديل أو الـ Scaler. التأكد من وجود الملفات التالية في نفس المجلد:")
+    st.code("TaxiFarePredictionModel.pkl\nTaxiFareScaler.pkl")
+    st.stop()
 except Exception as e:
-    st.error("Could not load the model or scaler.")
-    st.error(str(e))
+    st.error("حدث خطأ أثناء تحميل الموديل:")
+    st.exception(e)
     st.stop()
 
 
@@ -358,7 +362,6 @@ if st.button("Predict Taxi Fare"):
             prediction = model.predict(data_scaled)
             fare = float(prediction[0])
 
-            # Displaying HTML components on single lines to prevent Markdown formatting bugs
             st.markdown(f'<div class="result-card"><div class="result-title">Estimated Taxi Fare</div><div class="result-price">${fare:.2f}</div></div>', unsafe_allow_html=True)
             st.markdown(f'<div class="info-card">Trip Distance: {distance:.2f} km</div>', unsafe_allow_html=True)
             st.markdown(f'<div class="info-card">Bearing: {bearing:.2f} degrees</div>', unsafe_allow_html=True)
