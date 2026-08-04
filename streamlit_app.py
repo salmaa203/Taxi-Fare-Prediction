@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import folium
+from folium.plugins import Geocoder
 from streamlit_folium import st_folium
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -359,13 +360,12 @@ with col3:
 # =========================================================
 
 st.markdown(
-    '<div class="section-title">Select Route</div>',
+    '<div class="section-title">Select Route on Map</div>',
     unsafe_allow_html=True
 )
 
 st.write(
-    "Click once on the map to select Pickup, "
-    "then click again to select Dropoff."
+    "Use the **Search Bar 🔍** on top-right of the map or click on the map to select Pickup, then Dropoff."
 )
 
 if "pickup" not in st.session_state:
@@ -379,6 +379,9 @@ m = folium.Map(
     zoom_start=11,
     tiles="OpenStreetMap"
 )
+
+# إضافة أيقونة/شريط البحث على الخريطة
+Geocoder(position="topright", add_marker=False).add_to(m)
 
 # Pickup Marker
 if st.session_state.pickup is not None:
