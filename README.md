@@ -66,4 +66,4 @@ Users can:
   
 ## Live Demo
 
-[![Open App](https://img.shields.io/badge/Live%20Demo-Open%20App-blue?style=for-the-badge)](https://taxi-fare-prediction-g9tm7nawkeq8jc7seimyxo.streamlit.app/)
+[![Open App](https://img.shields.io/badge/Open%20App-blue?style=for-the-badge)](https://taxi-fare-prediction-g9tm7nawkeq8jc7seimyxo.streamlit.app/)
