@@ -2,11 +2,15 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
+import folium
+
+from streamlit_folium import st_folium
 
 
 # =========================
 # Page Configuration
 # =========================
+
 st.set_page_config(
     page_title="Taxi Fare Prediction",
     page_icon="🚕",
@@ -17,10 +21,13 @@ st.set_page_config(
 # =========================
 # Load Model and Scaler
 # =========================
+
 @st.cache_resource
 def load_models():
+
     model = joblib.load("TaxiFarePredictionModel.pkl")
     scaler = joblib.load("TaxiFareScaler.pkl")
+
     return model, scaler
 
 
@@ -30,7 +37,9 @@ model, scaler = load_models()
 # =========================
 # Helper Functions
 # =========================
+
 def haversine_distance(lat1, lon1, lat2, lon2):
+
     r = 6371.0
 
     lat1, lon1, lat2, lon2 = map(
@@ -54,6 +63,7 @@ def haversine_distance(lat1, lon1, lat2, lon2):
 
 
 def calculate_bearing(lat1, lon1, lat2, lon2):
+
     lat1, lon1, lat2, lon2 = map(
         np.radians,
         [lat1, lon1, lat2, lon2]
@@ -78,6 +88,7 @@ def calculate_bearing(lat1, lon1, lat2, lon2):
 # =========================
 # Landmarks
 # =========================
+
 JFK_COORD = (40.6413, -73.7781)
 EWR_COORD = (40.6895, -74.1745)
 LGA_COORD = (40.7769, -73.8740)
@@ -88,21 +99,25 @@ NYC_COORD = (40.7128, -74.0060)
 # =========================
 # Title
 # =========================
+
 st.title("🚕 Taxi Fare Prediction")
 
 st.write(
-    "Enter the trip details below to estimate the taxi fare."
+    "Select your pickup and dropoff locations on the map "
+    "and enter the trip details to estimate the taxi fare."
 )
 
 
 # =========================
 # Trip Information
 # =========================
+
 st.subheader("Trip Information")
 
 col1, col2 = st.columns(2)
 
 with col1:
+
     passenger_count = st.number_input(
         "Passenger Count",
         min_value=1,
@@ -137,6 +152,7 @@ with col1:
 
 
 with col2:
+
     weekday = st.number_input(
         "Weekday",
         min_value=0,
@@ -180,54 +196,178 @@ with col2:
 
 
 # =========================
-# Locations
+# Map
 # =========================
-st.subheader("Pickup Location")
 
-col1, col2 = st.columns(2)
+st.subheader("📍 Select Pickup & Dropoff Locations")
 
-with col1:
-    pickup_latitude = st.number_input(
-        "Pickup Latitude",
-        value=40.7128,
-        format="%.6f"
+st.write(
+    "Click once on the map for Pickup location, "
+    "then click again for Dropoff location."
+)
+
+
+# Initialize session state
+
+if "pickup" not in st.session_state:
+    st.session_state.pickup = None
+
+if "dropoff" not in st.session_state:
+    st.session_state.dropoff = None
+
+
+# Create map centered on NYC
+
+m = folium.Map(
+    location=[40.7128, -74.0060],
+    zoom_start=11
+)
+
+
+# Add existing pickup marker
+
+if st.session_state.pickup is not None:
+
+    folium.Marker(
+        st.session_state.pickup,
+        popup="Pickup Location",
+        tooltip="Pickup",
+        icon=folium.Icon(
+            color="green",
+            icon="play"
+        )
+    ).add_to(m)
+
+
+# Add existing dropoff marker
+
+if st.session_state.dropoff is not None:
+
+    folium.Marker(
+        st.session_state.dropoff,
+        popup="Dropoff Location",
+        tooltip="Dropoff",
+        icon=folium.Icon(
+            color="red",
+            icon="stop"
+        )
+    ).add_to(m)
+
+
+# Display map
+
+map_data = st_folium(
+    m,
+    width=700,
+    height=500,
+    returned_objects=["last_clicked"]
+)
+
+
+# =========================
+# Handle Map Click
+# =========================
+
+if map_data["last_clicked"] is not None:
+
+    clicked_lat = map_data["last_clicked"]["lat"]
+    clicked_lon = map_data["last_clicked"]["lng"]
+
+    # First click = Pickup
+
+    if st.session_state.pickup is None:
+
+        st.session_state.pickup = (
+            clicked_lat,
+            clicked_lon
+        )
+
+        st.rerun()
+
+
+    # Second click = Dropoff
+
+    elif st.session_state.dropoff is None:
+
+        st.session_state.dropoff = (
+            clicked_lat,
+            clicked_lon
+        )
+
+        st.rerun()
+
+
+# =========================
+# Display Selected Locations
+# =========================
+
+if st.session_state.pickup is not None:
+
+    st.success(
+        f"Pickup selected: "
+        f"{st.session_state.pickup[0]:.5f}, "
+        f"{st.session_state.pickup[1]:.5f}"
     )
 
-with col2:
-    pickup_longitude = st.number_input(
-        "Pickup Longitude",
-        value=-74.0060,
-        format="%.6f"
+
+if st.session_state.dropoff is not None:
+
+    st.error(
+        f"Dropoff selected: "
+        f"{st.session_state.dropoff[0]:.5f}, "
+        f"{st.session_state.dropoff[1]:.5f}"
     )
 
 
-st.subheader("Dropoff Location")
+# Reset locations button
 
-col1, col2 = st.columns(2)
+if st.button("🔄 Reset Locations"):
 
-with col1:
-    dropoff_latitude = st.number_input(
-        "Dropoff Latitude",
-        value=40.7580,
-        format="%.6f"
-    )
+    st.session_state.pickup = None
+    st.session_state.dropoff = None
 
-with col2:
-    dropoff_longitude = st.number_input(
-        "Dropoff Longitude",
-        value=-73.9855,
-        format="%.6f"
-    )
+    st.rerun()
 
 
 # =========================
 # Prediction
 # =========================
-if st.button("Predict Taxi Fare", use_container_width=True):
+
+if st.button(
+    "🚕 Predict Taxi Fare",
+    use_container_width=True
+):
 
     try:
 
+        # Check locations
+
+        if (
+            st.session_state.pickup is None
+            or st.session_state.dropoff is None
+        ):
+
+            st.warning(
+                "Please select both Pickup and Dropoff "
+                "locations on the map."
+            )
+
+            st.stop()
+
+
+        # Get coordinates
+
+        pickup_latitude = st.session_state.pickup[0]
+        pickup_longitude = st.session_state.pickup[1]
+
+        dropoff_latitude = st.session_state.dropoff[0]
+        dropoff_longitude = st.session_state.dropoff[1]
+
+
+        # =========================
         # Distance
+        # =========================
+
         distance = haversine_distance(
             pickup_latitude,
             pickup_longitude,
@@ -235,7 +375,11 @@ if st.button("Predict Taxi Fare", use_container_width=True):
             dropoff_longitude
         )
 
+
+        # =========================
         # Bearing
+        # =========================
+
         bearing = calculate_bearing(
             pickup_latitude,
             pickup_longitude,
@@ -243,7 +387,11 @@ if st.button("Predict Taxi Fare", use_container_width=True):
             dropoff_longitude
         )
 
-        # Landmark distances
+
+        # =========================
+        # Landmark Distances
+        # =========================
+
         jfk_dist = haversine_distance(
             pickup_latitude,
             pickup_longitude,
@@ -279,59 +427,117 @@ if st.button("Predict Taxi Fare", use_container_width=True):
             NYC_COORD[1]
         )
 
-        # Feature engineering
-        is_weekend = 1 if weekday in [5, 6] else 0
 
-        is_night = 1 if hour >= 22 or hour <= 5 else 0
+        # =========================
+        # Feature Engineering
+        # =========================
+
+        is_weekend = (
+            1 if weekday in [5, 6]
+            else 0
+        )
+
+        is_night = (
+            1 if hour >= 22 or hour <= 5
+            else 0
+        )
 
         is_rush_hour = (
             1 if hour in [7, 8, 9, 16, 17, 18]
             else 0
         )
 
-        # Create dataframe
+
+        # =========================
+        # Create DataFrame
+        # =========================
+
         data = pd.DataFrame({
+
             "Car Condition": [car_condition],
+
             "Weather": [weather],
+
             "Traffic Condition": [traffic],
+
             "pickup_longitude": [pickup_longitude],
+
             "pickup_latitude": [pickup_latitude],
+
             "dropoff_longitude": [dropoff_longitude],
+
             "dropoff_latitude": [dropoff_latitude],
+
             "passenger_count": [passenger_count],
+
             "hour": [hour],
+
             "day": [day],
+
             "month": [month],
+
             "weekday": [weekday],
+
             "year": [year],
+
             "jfk_dist": [jfk_dist],
+
             "ewr_dist": [ewr_dist],
+
             "lga_dist": [lga_dist],
+
             "sol_dist": [sol_dist],
+
             "nyc_dist": [nyc_dist],
+
             "distance": [distance],
+
             "bearing": [bearing],
+
             "is_weekend": [is_weekend],
+
             "is_night": [is_night],
+
             "is_rush_hour": [is_rush_hour]
+
         })
 
+
+        # =========================
         # Scaling
+        # =========================
+
         data_scaled = scaler.transform(data)
 
+
+        # =========================
         # Prediction
+        # =========================
+
         prediction = model.predict(data_scaled)
 
         fare = float(prediction[0])
 
+
+        # =========================
+        # Results
+        # =========================
+
         st.success(
-            f"Estimated Taxi Fare: ${fare:.2f}"
+            f"💰 Estimated Taxi Fare: ${fare:.2f}"
         )
 
         st.info(
-            f"Trip Distance: {distance:.2f} km"
+            f"🚕 Trip Distance: {distance:.2f} km"
         )
+
+        st.info(
+            f"🧭 Bearing: {bearing:.2f}°"
+        )
+
 
     except Exception as e:
 
-        st.error(f"Error: {str(e)}")
+        st.error(
+            f"Error: {str(e)}"
+        )
