@@ -7,6 +7,7 @@ from folium.plugins import Geocoder
 from streamlit_folium import st_folium
 from datetime import datetime
 
+
 # =========================================================
 # Page Configuration
 # =========================================================
@@ -198,6 +199,18 @@ def calculate_bearing(lat1, lon1, lat2, lon2):
     return np.degrees(initial_bearing)
 
 
+@st.cache_data
+def get_address_from_coords(coords):
+    """تحويل الإحداثيات لاسم عنوان بالعربي/الإنجليزي"""
+    try:
+        from geopy.geocoders import Nominatim
+        geolocator = Nominatim(user_agent="taxi_fare_prediction_app")
+        location = geolocator.reverse(coords, timeout=5)
+        return location.address if location else "Address not found"
+    except Exception:
+        return f"Lat: {coords[0]:.4f}, Lon: {coords[1]:.4f}"
+
+
 # =========================================================
 # Landmarks
 # =========================================================
@@ -236,7 +249,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Safe DateTime handling for Streamlit Cloud
+# Safe DateTime handling
 try:
     from zoneinfo import ZoneInfo
     now = datetime.now(ZoneInfo("Africa/Cairo"))
@@ -379,8 +392,11 @@ m = folium.Map(
     tiles="OpenStreetMap"
 )
 
-# 🔍 إضافة زر البحث
-Geocoder().add_to(m)
+# 🔍 إضافة زر البحث على الخريطة
+try:
+    Geocoder().add_to(m)
+except Exception:
+    pass
 
 # Pickup Marker
 if st.session_state.pickup is not None:
@@ -432,8 +448,47 @@ if map_data and map_data.get("last_clicked"):
 
 
 # =========================================================
+# 📍 Display Selected Locations (عرض الأماكن المختارة)
+# =========================================================
+
+col_p, col_d = st.columns(2)
+
+with col_p:
+    if st.session_state.pickup:
+        pickup_address = get_address_from_coords(st.session_state.pickup)
+        st.markdown(
+            f"""
+            <div class="info-card" style="border-left: 5px solid #22c55e;">
+                🟢 <strong>Pickup Location:</strong><br>
+                <small>{pickup_address}</small>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    else:
+        st.info("🟢 Please click on the map to set **Pickup**")
+
+with col_d:
+    if st.session_state.dropoff:
+        dropoff_address = get_address_from_coords(st.session_state.dropoff)
+        st.markdown(
+            f"""
+            <div class="info-card" style="border-left: 5px solid #ef4444;">
+                🔴 <strong>Dropoff Location:</strong><br>
+                <small>{dropoff_address}</small>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    else:
+        st.info("🔴 Click again to set **Dropoff**")
+
+
+# =========================================================
 # Reset Locations
 # =========================================================
+
+st.markdown("<br>", unsafe_allow_html=True)
 
 if st.button("Reset Locations"):
     st.session_state.pickup = None
