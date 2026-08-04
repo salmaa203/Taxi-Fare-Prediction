@@ -155,7 +155,7 @@ def load_models():
 try:
     model, scaler = load_models()
 except Exception as e:
-    st.error("Could not load the model or scaler. Please make sure .pkl files exist in the main repository directory.")
+    st.error("Could not load the model or scaler.")
     st.error(str(e))
     st.stop()
 
@@ -342,17 +342,12 @@ with col3:
 
 
 # =========================================================
-# Map
+# Selected Coordinates Display / Manual Inputs
 # =========================================================
 
 st.markdown(
-    '<div class="section-title">Select Route</div>',
+    '<div class="section-title">Selected Coordinates</div>',
     unsafe_allow_html=True
-)
-
-st.write(
-    "Click once on the map to select Pickup, "
-    "then click again to select Dropoff."
 )
 
 if "pickup" not in st.session_state:
@@ -360,6 +355,53 @@ if "pickup" not in st.session_state:
 
 if "dropoff" not in st.session_state:
     st.session_state.dropoff = None
+
+col_p, col_d = st.columns(2)
+
+with col_p:
+    st.markdown("**Pickup Location**")
+    p_lat = st.number_input(
+        "Pickup Latitude",
+        value=st.session_state.pickup[0] if st.session_state.pickup else 0.0,
+        format="%.6f"
+    )
+    p_lon = st.number_input(
+        "Pickup Longitude",
+        value=st.session_state.pickup[1] if st.session_state.pickup else 0.0,
+        format="%.6f"
+    )
+    if p_lat != 0.0 and p_lon != 0.0:
+        st.session_state.pickup = (p_lat, p_lon)
+
+with col_d:
+    st.markdown("**Dropoff Location**")
+    d_lat = st.number_input(
+        "Dropoff Latitude",
+        value=st.session_state.dropoff[0] if st.session_state.dropoff else 0.0,
+        format="%.6f"
+    )
+    d_lon = st.number_input(
+        "Dropoff Longitude",
+        value=st.session_state.dropoff[1] if st.session_state.dropoff else 0.0,
+        format="%.6f"
+    )
+    if d_lat != 0.0 and d_lon != 0.0:
+        st.session_state.dropoff = (d_lat, d_lon)
+
+
+# =========================================================
+# Map Selection
+# =========================================================
+
+st.markdown(
+    '<div class="section-title">Select Route on Map</div>',
+    unsafe_allow_html=True
+)
+
+st.write(
+    "Click once on the map to select Pickup, "
+    "then click again to select Dropoff."
+)
 
 m = folium.Map(
     location=[40.7128, -74.0060],
@@ -431,7 +473,7 @@ st.markdown(
 
 if st.button("Predict Taxi Fare"):
     if st.session_state.pickup is None or st.session_state.dropoff is None:
-        st.warning("Please select both Pickup and Dropoff locations on the map.")
+        st.warning("Please select both Pickup and Dropoff locations on the map or enter coordinates.")
     else:
         try:
             pickup_latitude = st.session_state.pickup[0]
